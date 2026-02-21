@@ -1,0 +1,96 @@
+# 📋 Plan de Refactoring
+
+**Date de création** : 2026-02-21
+**Auteur** : Evan Engels
+**Deadline** : 2026-02-23
+
+---
+
+## Principes Directeurs
+
+1. **Sécuriser avant de refactorer** – Aucune modification structurelle sans tests verts
+2. **Petits pas** – Chaque changement est isolé, testé, et committé
+3. **Expliquer le pourquoi** – Chaque décision est documentée
+4. **Clean Code** – Single Responsibility, injection de dépendances, séparation domaine/infrastructure
+
+---
+
+## Processus en 7 Étapes
+
+### Étape 1 : Audit et État Initial ✅
+- [x] Explorer la structure complète du projet
+- [x] Documenter l'architecture actuelle
+- [x] Identifier et prioriser les dettes techniques
+- [x] Vérifier que l'application fonctionne
+- [x] Vérifier que les tests existants passent (9/9 ✅)
+
+**Livrable** : `docs/audit.md`
+
+---
+
+### Étape 2 : Sécurisation par les Tests 🔜
+- [ ] Ajouter le test manquant pour `getGreeting`
+- [ ] Ajouter les tests de cas d'erreur
+- [ ] Ajouter les tests de validation d'entrée
+- [ ] Vérifier la couverture de tests
+- [ ] S'assurer que tous les tests passent
+
+**Objectif** : Filet de sécurité complet avant tout refactoring structurel
+
+---
+
+### Étape 3 : Fiabilisation Environnement
+- [ ] Ajouter `.gitignore` à la racine
+- [ ] Nettoyer les fichiers non trackés
+- [ ] Documenter les commandes de développement
+- [ ] Résoudre le problème de permissions Docker
+
+---
+
+### Étape 4 : Introduction TypeScript
+- [ ] Installer et configurer TypeScript
+- [ ] Convertir progressivement les fichiers backend
+- [ ] Définir les interfaces formelles (persistence)
+- [ ] Maintenir la compatibilité avec les tests
+
+---
+
+### Étape 5 : Mise à jour Node
+- [ ] Évaluer la compatibilité des dépendances
+- [ ] Mettre à jour si nécessaire
+- [ ] Vérifier que tout fonctionne après mise à jour
+
+---
+
+### Étape 6 : Hygiène du Projet
+- [ ] Ajouter la gestion d'erreur centralisée
+- [ ] Ajouter la validation d'entrée
+- [ ] Nettoyer le code (nommage, structure)
+- [ ] Appliquer les principes Clean Code
+
+---
+
+### Étape 7 : Isolation Infrastructure
+- [ ] Extraire la logique métier des routes
+- [ ] Introduire l'injection de dépendances
+- [ ] Séparer domaine et infrastructure
+- [ ] Préparer l'architecture hexagonale
+
+---
+
+## Règles de Commit
+
+Chaque commit suit le format :
+```
+<type>(<scope>): <description>
+
+<corps explicatif si nécessaire>
+```
+
+Types utilisés :
+- `docs` : Documentation
+- `test` : Ajout/modification de tests
+- `chore` : Configuration, outillage
+- `refactor` : Refactoring (sans changement fonctionnel)
+- `feat` : Nouvelle fonctionnalité
+- `fix` : Correction de bug
