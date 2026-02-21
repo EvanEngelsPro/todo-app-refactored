@@ -43,3 +43,16 @@ test('it stores item correctly', async () => {
     expect(res.send.mock.calls[0].length).toBe(1);
     expect(res.send.mock.calls[0][0]).toEqual(expectedItem);
 });
+
+test('it always creates item with completed set to false', async () => {
+    const id = 'test-uuid';
+    const req = { body: { name: 'Buy milk', completed: true } };
+    const res = { send: jest.fn() };
+
+    uuid.mockReturnValue(id);
+
+    await addItem(req, res);
+
+    const storedItem = db.storeItem.mock.calls[0][0];
+    expect(storedItem.completed).toBe(false);
+});

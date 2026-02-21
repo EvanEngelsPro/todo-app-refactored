@@ -14,6 +14,10 @@ beforeEach(() => {
     }
 });
 
+afterEach(async () => {
+    await db.teardown().catch(() => { });
+});
+
 test('it initializes correctly', async () => {
     await db.init();
 });
@@ -62,4 +66,18 @@ test('it can get a single item', async () => {
 
     const item = await db.getItem(ITEM.id);
     expect(item).toEqual(ITEM);
+});
+
+test('it returns empty array when no items exist', async () => {
+    await db.init();
+
+    const items = await db.getItems();
+    expect(items).toEqual([]);
+});
+
+test('it returns undefined for a non-existent item', async () => {
+    await db.init();
+
+    const item = await db.getItem('non-existent-id');
+    expect(item).toBeUndefined();
 });
