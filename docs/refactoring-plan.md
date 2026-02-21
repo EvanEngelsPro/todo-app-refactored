@@ -28,14 +28,18 @@
 
 ---
 
-### Étape 2 : Sécurisation par les Tests 🔜
-- [ ] Ajouter le test manquant pour `getGreeting`
-- [ ] Ajouter les tests de cas d'erreur
-- [ ] Ajouter les tests de validation d'entrée
-- [ ] Vérifier la couverture de tests
-- [ ] S'assurer que tous les tests passent
+### Étape 2 : Sécurisation par les Tests 🔄
+- [x] Ajouter le test manquant pour `getGreeting` (sous-étape 2.1)
+- [x] Ajouter les tests de cas d'erreur pour toutes les routes (sous-étape 2.2)
+- [x] Protéger le comportement métier `addItem` → `completed: false` (sous-étape 2.3)
+- [x] Ajouter les tests edge cases SQLite + teardown propre (sous-étape 2.4)
+- [x] S'assurer que tous les tests passent
+- [x] Extraire l'express app pour faciliter les tests (sous-étape 2.5)
+- [x] Ajouter les tests intégration HTTP backend (sous-étape 2.6)
+- [x] Ajouter les tests E2E frontend (sous-étape 2.7)
+- [x] Vérifier l'isolation de l'environnement de test (sous-étape 2.8)
 
-**Objectif** : Filet de sécurité complet avant tout refactoring structurel
+**Résultat** : 9 tests → 21 tests (8 suites), tous verts ✅
 
 ---
 
