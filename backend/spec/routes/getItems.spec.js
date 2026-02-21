@@ -6,6 +6,21 @@ jest.mock('../../src/persistence', () => ({
     getItems: jest.fn(),
 }));
 
+beforeEach(() => {
+    jest.resetAllMocks();
+});
+
+test('it propagates error when getItems fails', async () => {
+    const error = new Error('DB connection lost');
+    const req = {};
+    const res = { send: jest.fn() };
+
+    db.getItems.mockRejectedValue(error);
+
+    await expect(getItems(req, res)).rejects.toThrow('DB connection lost');
+    expect(res.send).not.toHaveBeenCalled();
+});
+
 test('it gets items correctly', async () => {
     const req = {};
     const res = { send: jest.fn() };

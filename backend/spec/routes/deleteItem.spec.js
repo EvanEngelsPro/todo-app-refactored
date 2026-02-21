@@ -7,6 +7,21 @@ jest.mock('../../src/persistence', () => ({
     getItem: jest.fn(),
 }));
 
+beforeEach(() => {
+    jest.resetAllMocks();
+});
+
+test('it propagates error when removeItem fails', async () => {
+    const error = new Error('DB connection lost');
+    const req = { params: { id: 12345 } };
+    const res = { sendStatus: jest.fn() };
+
+    db.removeItem.mockRejectedValue(error);
+
+    await expect(deleteItem(req, res)).rejects.toThrow('DB connection lost');
+    expect(res.sendStatus).not.toHaveBeenCalled();
+});
+
 test('it removes item correctly', async () => {
     const req = { params: { id: 12345 } };
     const res = { sendStatus: jest.fn() };
