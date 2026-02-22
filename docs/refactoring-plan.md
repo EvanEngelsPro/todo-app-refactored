@@ -67,10 +67,10 @@
 ---
 
 ### Étape 6 : Hygiène du Projet
-- [ ] Ajouter la gestion d'erreur centralisée
-- [ ] Ajouter la validation d'entrée
-- [ ] Nettoyer le code (nommage, structure)
-- [ ] Appliquer les principes Clean Code
+- [x] Ajouter la gestion d'erreur centralisée
+- [x] Ajouter la validation d'entrée
+- [x] Nettoyer le code (nommage, structure)
+- [x] Appliquer les principes Clean Code
 
 ---
 
