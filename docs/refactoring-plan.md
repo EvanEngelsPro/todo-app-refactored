@@ -59,10 +59,10 @@
 
 ---
 
-### Étape 5 : Mise à jour Node
-- [ ] Évaluer la compatibilité des dépendances
-- [ ] Mettre à jour si nécessaire
-- [ ] Vérifier que tout fonctionne après mise à jour
+### Étape 5 : Mise à jour Node ✅
+- [x] Évaluer la compatibilité des dépendances
+- [x] Mettre à jour si nécessaire
+- [x] Vérifier que tout fonctionne après mise à jour
 
 ---
 
