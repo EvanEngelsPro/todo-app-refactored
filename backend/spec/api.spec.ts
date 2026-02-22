@@ -39,7 +39,7 @@ describe('HTTP Integration Tests', () => {
         const addItem = await request(app)
             .post('/api/items')
             .send({ name: 'Integration Test Item' });
-        expect(addItem.status).toBe(200);
+        expect(addItem.status).toBe(201);
         const newItem = addItem.body;
         expect(newItem.name).toBe('Integration Test Item');
         expect(newItem.completed).toBe(false);
