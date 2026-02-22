@@ -43,11 +43,11 @@
 
 ---
 
-### Étape 3 : Fiabilisation Environnement
-- [ ] Ajouter `.gitignore` à la racine
-- [ ] Nettoyer les fichiers non trackés
-- [ ] Documenter les commandes de développement
-- [ ] Résoudre le problème de permissions Docker
+### Étape 3 : Fiabilisation Environnement ✅
+- [x] Ajouter `.gitignore` à la racine
+- [x] Nettoyer les fichiers non trackés
+- [x] Documenter les commandes de développement (`docs/development.md`)
+- [x] Résoudre le problème de permissions Docker
 
 ---
 
