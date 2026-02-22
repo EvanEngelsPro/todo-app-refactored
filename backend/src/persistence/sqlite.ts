@@ -1,17 +1,20 @@
-const sqlite3 = require('sqlite3').verbose();
-const fs = require('fs');
+import sqlite3 from 'sqlite3';
+import fs from 'fs';
+import { DatabaseDriver, TodoItem } from './types';
+
+const sqlite3Verbose = sqlite3.verbose();
 const location = process.env.SQLITE_DB_LOCATION || '/etc/todos/todo.db';
 
-let db, dbAll, dbRun;
+let db: sqlite3.Database;
 
-function init() {
+export async function init(): Promise<void> {
     const dirName = require('path').dirname(location);
     if (!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, { recursive: true });
     }
 
     return new Promise((acc, rej) => {
-        db = new sqlite3.Database(location, (err) => {
+        db = new sqlite3Verbose.Database(location, (err) => {
             if (err) return rej(err);
 
             if (process.env.NODE_ENV !== 'test')
@@ -19,7 +22,7 @@ function init() {
 
             db.run(
                 'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean)',
-                (err, result) => {
+                (err) => {
                     if (err) return rej(err);
                     acc();
                 },
@@ -28,8 +31,11 @@ function init() {
     });
 }
 
-async function teardown() {
+export async function teardown(): Promise<void> {
     return new Promise((acc, rej) => {
+        if (!db) {
+            return acc();
+        }
         db.close((err) => {
             if (err) rej(err);
             else acc();
@@ -37,37 +43,37 @@ async function teardown() {
     });
 }
 
-async function getItems() {
+export async function getItems(): Promise<TodoItem[]> {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items', (err, rows) => {
+        db.all('SELECT * FROM todo_items', (err, rows: any[]) => {
             if (err) return rej(err);
             acc(
-                rows.map((item) =>
-                    Object.assign({}, item, {
-                        completed: item.completed === 1,
-                    }),
-                ),
+                rows.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    completed: item.completed === 1,
+                })),
             );
         });
     });
 }
 
-async function getItem(id) {
+export async function getItem(id: string): Promise<TodoItem | undefined> {
     return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows) => {
+        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows: any[]) => {
             if (err) return rej(err);
             acc(
-                rows.map((item) =>
-                    Object.assign({}, item, {
-                        completed: item.completed === 1,
-                    }),
-                )[0],
+                rows.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    completed: item.completed === 1,
+                }))[0],
             );
         });
     });
 }
 
-async function storeItem(item) {
+export async function storeItem(item: TodoItem): Promise<void> {
     return new Promise((acc, rej) => {
         db.run(
             'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
@@ -80,7 +86,7 @@ async function storeItem(item) {
     });
 }
 
-async function updateItem(id, item) {
+export async function updateItem(id: string, item: TodoItem): Promise<void> {
     return new Promise((acc, rej) => {
         db.run(
             'UPDATE todo_items SET name=?, completed=? WHERE id = ?',
@@ -93,7 +99,7 @@ async function updateItem(id, item) {
     });
 }
 
-async function removeItem(id) {
+export async function removeItem(id: string): Promise<void> {
     return new Promise((acc, rej) => {
         db.run('DELETE FROM todo_items WHERE id = ?', [id], (err) => {
             if (err) return rej(err);
@@ -102,7 +108,7 @@ async function removeItem(id) {
     });
 }
 
-module.exports = {
+const driver: DatabaseDriver = {
     init,
     teardown,
     getItems,
@@ -111,3 +117,5 @@ module.exports = {
     updateItem,
     removeItem,
 };
+
+export default driver;
