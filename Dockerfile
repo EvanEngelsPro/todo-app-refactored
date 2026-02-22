@@ -56,9 +56,12 @@ RUN npm run build
 FROM base AS backend-dev
 COPY backend/package.json backend/package-lock.json ./
 RUN npm install
+COPY backend/tsconfig.json ./
+COPY backend/jest.config.js ./
 COPY backend/spec ./spec
 COPY backend/src ./src
 CMD ["npm", "run", "dev"]
+
 
 ###################################################
 # Stage: test
@@ -68,7 +71,16 @@ CMD ["npm", "run", "dev"]
 # cases.
 ###################################################
 FROM backend-dev AS test
+COPY backend/jest.config.js ./
 RUN npm run test
+
+###################################################
+# Stage: backend-build
+#
+# This stage compiles the TypeScript backend to JavaScript.
+###################################################
+FROM backend-dev AS backend-build
+RUN npm run build
 
 ###################################################
 # Stage: final
@@ -84,7 +96,7 @@ ENV NODE_ENV=production
 COPY --from=test /usr/local/app/package.json /usr/local/app/package-lock.json ./
 RUN npm ci --production && \
     npm cache clean --force
-COPY backend/src ./src
-COPY --from=client-build /usr/local/app/dist ./src/static
+COPY --from=backend-build /usr/local/app/dist ./dist
+COPY --from=client-build /usr/local/app/dist ./dist/static
 EXPOSE 3000
-CMD ["node", "src/index.js"]
+CMD ["node", "dist/index.js"]

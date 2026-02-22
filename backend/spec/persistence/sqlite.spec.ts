@@ -1,8 +1,11 @@
-const db = require('../../src/persistence/sqlite');
-const fs = require('fs');
+import db from '../../src/persistence/sqlite';
+import fs from 'fs';
+import { TodoItem } from '../../src/persistence/types';
+import { beforeEach, afterEach, test, expect } from '@jest/globals';
+
 const location = process.env.SQLITE_DB_LOCATION || '/etc/todos/todo.db';
 
-const ITEM = {
+const ITEM: TodoItem = {
     id: '7aef3d7c-d301-4846-8358-2a91ec9d6be3',
     name: 'Test',
     completed: false,
@@ -81,3 +84,4 @@ test('it returns undefined for a non-existent item', async () => {
     const item = await db.getItem('non-existent-id');
     expect(item).toBeUndefined();
 });
+
