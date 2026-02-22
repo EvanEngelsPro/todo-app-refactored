@@ -1,8 +1,9 @@
-const request = require('supertest');
-const app = require('../src/app');
-const db = require('../src/persistence');
-const fs = require('fs');
-const path = require('path');
+import request from 'supertest';
+import app from '../src/app';
+import db from '../src/persistence';
+import fs from 'fs';
+import path from 'path';
+import { describe, beforeAll, afterAll, test, expect } from '@jest/globals';
 
 const TEST_DB_PATH = path.join(__dirname, 'test.db');
 
@@ -61,3 +62,4 @@ describe('HTTP Integration Tests', () => {
         expect(getFinal.body).toEqual([]);
     });
 });
+

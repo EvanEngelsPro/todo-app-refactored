@@ -1,6 +1,6 @@
 ###################################################
 # This Compose file provides the development environment for the todo app.
-# 
+#
 # Seeing the final version of the application bundles the frontend with the
 # backend, we are able to "simulate" that by using a proxy to route requests
 # to the appropriate service. All requests to /api will be routed to the 
@@ -47,7 +47,7 @@ services:
 
   ###################################################
   # Service: backend
-  # 
+  #
   # This service is the Node.js server that provides the API for the app.
   # When the container starts, it will use the image that results
   # from building the Dockerfile, targeting the backend-dev stage.
@@ -84,6 +84,8 @@ services:
           target: /usr/local/app/src
         - path: ./backend/package.json
           action: rebuild
+        - path: ./backend/tsconfig.json
+          action: rebuild
     labels:
       traefik.http.routers.backend.rule: Host(`localhost`) && PathPrefix(`/api`)
       traefik.http.services.backend.loadbalancer.server.port: 3000
@@ -98,7 +100,7 @@ services:
   # The Compose Watch configuration is used to automatically sync the code from
   # the host machine to the container. This allows the client to be automatically
   # reloaded when code changes are made.
-  # 
+  #
   # The labels are used to configure Traefik (the reverse proxy) with the 
   # appropriate routing rules. In this case, all requests to localhost will be
   # forwarded to this service's port 5173.
@@ -118,14 +120,13 @@ services:
       traefik.http.routers.client.rule: Host(`localhost`)
       traefik.http.services.client.loadbalancer.server.port: 5173
 
-
   ###################################################
   # Service: mysql
   #
   # The MySQL service is used to provide the database for the application.
   # The image for this service comes directly from Docker Hub and is a Docker 
   # Official Image.
-  
+
   # The data is persisted in a volume named todo-mysql-data. Using a volume 
   # allows us to take down the services without losing the data. When we start
   # the services again, the data will still be there (assuming we didn't delete
@@ -139,11 +140,11 @@ services:
     image: mysql:9.3
     volumes:
       - todo-mysql-data:/var/lib/mysql
-    environment: 
+    environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: todos
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 5s
       timeout: 5s
       retries: 5
