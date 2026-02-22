@@ -14,23 +14,27 @@ beforeEach(() => {
 test('it propagates error when getItems fails', async () => {
     const error = new Error('DB connection lost');
     const req: any = {};
-    const res: any = { send: jest.fn() };
+    const res: any = {
+        json: jest.fn(),
+    };
 
     (db.getItems as jest.Mock).mockRejectedValue(error);
 
     await expect(getItems(req, res)).rejects.toThrow('DB connection lost');
-    expect(res.send).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
 });
 
 test('it gets items correctly', async () => {
     const req: any = {};
-    const res: any = { send: jest.fn() };
+    const res: any = {
+        json: jest.fn(),
+    };
     (db.getItems as jest.Mock).mockReturnValue(Promise.resolve(ITEMS));
 
     await getItems(req, res);
 
     expect((db.getItems as jest.Mock).mock.calls.length).toBe(1);
-    expect(res.send.mock.calls[0].length).toBe(1);
-    expect(res.send.mock.calls[0][0]).toEqual(ITEMS);
+    expect(res.json.mock.calls[0].length).toBe(1);
+    expect(res.json.mock.calls[0][0]).toEqual(ITEMS);
 });
 

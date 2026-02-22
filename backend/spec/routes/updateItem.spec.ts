@@ -18,12 +18,15 @@ test('it propagates error when updateItem fails', async () => {
         params: { id: 1234 },
         body: { name: 'New title', completed: false },
     };
-    const res: any = { send: jest.fn() };
+    const res: any = {
+        json: jest.fn(),
+    };
+    const next = jest.fn();
 
     (db.updateItem as jest.Mock).mockRejectedValue(error);
 
-    await expect(updateItem(req, res)).rejects.toThrow('DB connection lost');
-    expect(res.send).not.toHaveBeenCalled();
+    await expect(updateItem(req, res, next)).rejects.toThrow('DB connection lost');
+    expect(res.json).not.toHaveBeenCalled();
 });
 
 test('it updates items correctly', async () => {
@@ -31,11 +34,14 @@ test('it updates items correctly', async () => {
         params: { id: 1234 },
         body: { name: 'New title', completed: false },
     };
-    const res: any = { send: jest.fn() };
+    const res: any = {
+        json: jest.fn(),
+    };
+    const next = jest.fn();
 
     (db.getItem as jest.Mock).mockReturnValue(Promise.resolve(ITEM));
 
-    await updateItem(req, res);
+    await updateItem(req, res, next);
 
     expect((db.updateItem as jest.Mock).mock.calls.length).toBe(1);
     expect((db.updateItem as jest.Mock).mock.calls[0][0]).toBe(req.params.id);
@@ -48,7 +54,7 @@ test('it updates items correctly', async () => {
     expect((db.getItem as jest.Mock).mock.calls.length).toBe(1);
     expect((db.getItem as jest.Mock).mock.calls[0][0]).toBe(req.params.id);
 
-    expect(res.send.mock.calls[0].length).toBe(1);
-    expect(res.send.mock.calls[0][0]).toEqual(ITEM);
+    expect(res.json.mock.calls[0].length).toBe(1);
+    expect(res.json.mock.calls[0][0]).toEqual(ITEM);
 });
 
