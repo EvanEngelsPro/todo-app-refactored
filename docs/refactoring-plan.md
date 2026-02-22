@@ -75,10 +75,10 @@
 ---
 
 ### Étape 7 : Isolation Infrastructure
-- [ ] Extraire la logique métier des routes
-- [ ] Introduire l'injection de dépendances
-- [ ] Séparer domaine et infrastructure
-- [ ] Préparer l'architecture hexagonale
+- [x] Extraire la logique métier des routes
+- [x] Introduire l'injection de dépendances
+- [x] Séparer domaine et infrastructure
+- [x] Préparer l'architecture hexagonale
 
 ---
 

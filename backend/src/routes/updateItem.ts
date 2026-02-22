@@ -1,12 +1,27 @@
-import { Request, Response } from 'express';
-import db from '../persistence';
+import { RequestHandler } from 'express';
+import { updateTodo } from '../services/todoService';
 
-export default async (req: Request, res: Response): Promise<void> => {
-    await db.updateItem(req.params.id as string, {
-        id: req.params.id as string,
-        name: req.body.name,
-        completed: req.body.completed,
-    });
-    const item = await db.getItem(req.params.id as string);
-    res.send(item);
+interface UpdateParams {
+    id: string;
+}
+
+interface UpdateBody {
+    name: string;
+    completed: boolean;
+}
+
+const updateItem: RequestHandler<UpdateParams, unknown, UpdateBody> = async (
+    req,
+    res,
+) => {
+    const item = await updateTodo(
+        req.params.id,
+        req.body.name,
+        req.body.completed,
+    );
+
+    res.json(item);
 };
+
+
+export default updateItem;

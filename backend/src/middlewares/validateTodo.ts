@@ -1,10 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
+import { RequestHandler } from 'express';
 
-export function validateCreateTodo(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-): void {
+interface CreateBody {
+    name: string;
+}
+
+export const validateCreateTodo: RequestHandler<
+    Record<string, never>,
+    unknown,
+    CreateBody
+> = (req, res, next) => {
     const { name } = req.body ?? {};
 
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -15,13 +19,22 @@ export function validateCreateTodo(
     }
 
     next();
+};
+
+interface UpdateParams {
+    id: string;
 }
 
-export function validateUpdateTodo(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-): void {
+interface UpdateBody {
+    name: string;
+    completed: boolean;
+}
+
+export const validateUpdateTodo: RequestHandler<
+    UpdateParams,
+    unknown,
+    UpdateBody
+> = (req, res, next) => {
     const { name, completed } = req.body ?? {};
 
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -39,4 +52,4 @@ export function validateUpdateTodo(
     }
 
     next();
-}
+};
