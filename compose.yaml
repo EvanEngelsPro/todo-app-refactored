@@ -82,8 +82,14 @@ services:
         - path: ./backend/src
           action: sync
           target: /usr/local/app/src
+
+        - path: ./backend/spec
+          action: sync
+          target: /usr/local/app/spec
+
         - path: ./backend/package.json
           action: rebuild
+
         - path: ./backend/tsconfig.json
           action: rebuild
     labels:
