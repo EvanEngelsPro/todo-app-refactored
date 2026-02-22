@@ -16,20 +16,31 @@ beforeEach(() => {
 
 test('it propagates error when storeItem fails', async () => {
     const error = new Error('DB connection lost');
+
     const req: any = { body: { name: 'Test item' } };
-    const res: any = { send: jest.fn() };
+
+    const res: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+    };
 
     (db.storeItem as jest.Mock).mockRejectedValue(error);
 
     await expect(addItem(req, res)).rejects.toThrow('DB connection lost');
-    expect(res.send).not.toHaveBeenCalled();
+
+    expect(res.json).not.toHaveBeenCalled();
 });
 
 test('it stores item correctly', async () => {
     const id = 'something-not-a-uuid';
     const name = 'A sample item';
+
     const req: any = { body: { name } };
-    const res: any = { send: jest.fn() };
+
+    const res: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+    };
 
     (uuid as jest.Mock).mockReturnValue(id);
 
@@ -37,22 +48,28 @@ test('it stores item correctly', async () => {
 
     const expectedItem = { id, name, completed: false };
 
-    expect((db.storeItem as jest.Mock).mock.calls.length).toBe(1);
-    expect((db.storeItem as jest.Mock).mock.calls[0][0]).toEqual(expectedItem);
-    expect(res.send.mock.calls[0].length).toBe(1);
-    expect(res.send.mock.calls[0][0]).toEqual(expectedItem);
+    expect(db.storeItem).toHaveBeenCalledWith(expectedItem);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+
+    expect(res.json).toHaveBeenCalledWith(expectedItem);
 });
 
 test('it always creates item with completed set to false', async () => {
     const id = 'test-uuid';
+
     const req: any = { body: { name: 'Buy milk', completed: true } };
-    const res: any = { send: jest.fn() };
+
+    const res: any = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+    };
 
     (uuid as jest.Mock).mockReturnValue(id);
 
     await addItem(req, res);
 
     const storedItem = (db.storeItem as jest.Mock).mock.calls[0][0];
+
     expect(storedItem.completed).toBe(false);
 });
-
