@@ -51,11 +51,11 @@
 
 ---
 
-### Étape 4 : Introduction TypeScript
-- [ ] Installer et configurer TypeScript
-- [ ] Convertir progressivement les fichiers backend
-- [ ] Définir les interfaces formelles (persistence)
-- [ ] Maintenir la compatibilité avec les tests
+### Étape 4 : Introduction TypeScript ✅
+- [x] Installer et configurer TypeScript
+- [x] Convertir progressivement les fichiers backend
+- [x] Définir les interfaces formelles (persistence)
+- [x] Maintenir la compatibilité avec les tests
 
 ---
 
