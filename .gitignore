@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+client/node_modules/
+
+# Build outputs
+client/dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# Testing
+playwright-report/
+test-results/
+backend/spec/*.db
+backend/spec/*.sqlite
+backend/spec/test.db-journal
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
