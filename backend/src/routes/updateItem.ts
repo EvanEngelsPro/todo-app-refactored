@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { updateTodo } from "../services/todoService";
+import { updateTodo } from "../services/todoService.js";
 
 interface UpdateParams {
   id: string;

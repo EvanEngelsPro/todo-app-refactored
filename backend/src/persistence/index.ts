@@ -1,6 +1,6 @@
-import mysqlDriver from "./mysql";
-import sqliteDriver from "./sqlite";
-import { DatabaseDriver } from "./types";
+import mysqlDriver from "./mysql.js";
+import sqliteDriver from "./sqlite.js";
+import { DatabaseDriver } from "./types.js";
 
 let db: DatabaseDriver;
 

@@ -1,5 +1,5 @@
-import db from "../persistence";
-import { TodoItem } from "../persistence/types";
+import db from "../persistence/index.js";
+import { TodoItem } from "../persistence/types.js";
 import { v4 as uuid } from "uuid";
 
 export async function createTodo(name: string): Promise<TodoItem> {

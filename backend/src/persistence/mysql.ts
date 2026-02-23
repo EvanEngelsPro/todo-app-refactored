@@ -1,7 +1,7 @@
 import waitPort from "wait-port";
 import fs from "fs";
 import mysql from "mysql2";
-import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types";
+import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types.js";
 
 const {
   MYSQL_HOST: HOST,

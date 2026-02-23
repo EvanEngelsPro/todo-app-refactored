@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { deleteTodo } from "../services/todoService";
+import { deleteTodo } from "../services/todoService.js";
 
 interface DeleteParams {
   id: string;

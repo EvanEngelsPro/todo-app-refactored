@@ -1,5 +1,5 @@
-import app from "./app";
-import db from "./persistence";
+import app from "./app.js";
+import db from "./persistence/index.js";
 
 db.init()
   .then(() => {

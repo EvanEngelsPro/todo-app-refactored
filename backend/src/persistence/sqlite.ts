@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import fs from "fs";
-import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types";
+import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types.js";
 import path from "path";
 import os from "os";
 
