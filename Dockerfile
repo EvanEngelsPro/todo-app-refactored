@@ -57,7 +57,8 @@ FROM base AS backend-dev
 COPY backend/package.json backend/package-lock.json ./
 RUN npm install
 COPY backend/tsconfig.json ./
-COPY backend/jest.config.js ./
+COPY backend/jest.config.cjs ./
+COPY backend/.dependency-cruiser.cjs ./
 COPY backend/spec ./spec
 COPY backend/src ./src
 CMD ["npm", "run", "dev"]
@@ -71,7 +72,7 @@ CMD ["npm", "run", "dev"]
 # cases.
 ###################################################
 FROM backend-dev AS test
-COPY backend/jest.config.js ./
+COPY backend/jest.config.cjs ./
 RUN npm run test
 
 ###################################################
