@@ -71,7 +71,15 @@ Enter project directory:
 
 cd todo-app-refactored
 
-No manual dependency installation is required when using Docker.
+npm install
+
+nvm use
+
+cd client
+npm install
+
+cd backend
+npm install
 
 ------------------------------------------------------------------------
 
