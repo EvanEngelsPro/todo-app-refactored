@@ -7,10 +7,10 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "dev": "npm run build && nodemon dist/index.js",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "test": "jest --config jest.config.cjs",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.cjs",
     "architecture:test": "depcruise src --config .dependency-cruiser.cjs",
     "lint": "prettier --check \"src/**/*.{ts,js}\"",
     "lint:fix": "prettier --write \"src/**/*.{ts,js}\"",
