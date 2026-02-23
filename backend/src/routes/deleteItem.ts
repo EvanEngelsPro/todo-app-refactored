@@ -1,14 +1,14 @@
-import { RequestHandler } from 'express';
-import { deleteTodo } from '../services/todoService';
+import { RequestHandler } from "express";
+import { deleteTodo } from "../services/todoService";
 
 interface DeleteParams {
-    id: string;
+  id: string;
 }
 
 const deleteItem: RequestHandler<DeleteParams> = async (req, res) => {
-    await deleteTodo(req.params.id);
+  await deleteTodo(req.params.id);
 
-    res.sendStatus(200);
+  res.sendStatus(200);
 };
 
 export default deleteItem;

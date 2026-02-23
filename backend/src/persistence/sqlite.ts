@@ -1,121 +1,139 @@
-import sqlite3 from 'sqlite3';
-import fs from 'fs';
-import { DatabaseDriver, TodoItem } from './types';
+import sqlite3 from "sqlite3";
+import fs from "fs";
+import { DatabaseDriver, TodoItem } from "./types";
+import path from "path";
+import os from "os";
 
 const sqlite3Verbose = sqlite3.verbose();
-const location = process.env.SQLITE_DB_LOCATION || '/etc/todos/todo.db';
+const location =
+  process.env.SQLITE_DB_LOCATION ||
+  (process.env.NODE_ENV === "test"
+    ? path.join(os.tmpdir(), `test-${process.pid}.db`)
+    : path.join(os.homedir(), "todo.db"));
 
 let db: sqlite3.Database;
 
 export async function init(): Promise<void> {
-    const dirName = require('path').dirname(location);
-    if (!fs.existsSync(dirName)) {
-        fs.mkdirSync(dirName, { recursive: true });
-    }
+  const dirName = path.dirname(location);
 
-    return new Promise((acc, rej) => {
-        db = new sqlite3Verbose.Database(location, (err) => {
-            if (err) return rej(err);
+  if (!fs.existsSync(dirName)) {
+    fs.mkdirSync(dirName, { recursive: true });
+  }
 
-            if (process.env.NODE_ENV !== 'test')
-                console.log(`Using sqlite database at ${location}`);
+  if (process.env.NODE_ENV === "test" && fs.existsSync(location)) {
+    fs.unlinkSync(location);
+  }
 
-            db.run(
-                'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean)',
-                (err) => {
-                    if (err) return rej(err);
-                    acc();
-                },
-            );
-        });
+  return new Promise((acc, rej) => {
+    db = new sqlite3Verbose.Database(location, (err) => {
+      if (err) return rej(err);
+
+      if (process.env.NODE_ENV !== "test") {
+        console.log(`Using sqlite database at ${location}`);
+      }
+
+      db.run(
+        "CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean)",
+        (err) => {
+          if (err) return rej(err);
+          acc();
+        },
+      );
     });
+  });
 }
 
 export async function teardown(): Promise<void> {
-    return new Promise((acc, rej) => {
-        if (!db) {
-            return acc();
-        }
-        db.close((err) => {
-            if (err) rej(err);
-            else acc();
-        });
+  return new Promise((acc, rej) => {
+    if (!db) return acc();
+
+    db.close((err) => {
+      if (err) return rej(err);
+
+      if (process.env.NODE_ENV === "test") {
+        try {
+          fs.unlinkSync(location);
+        } catch {}
+      }
+
+      acc();
     });
+  });
 }
 
 export async function getItems(): Promise<TodoItem[]> {
-    return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items', (err, rows: any[]) => {
-            if (err) return rej(err);
-            acc(
-                rows.map((item) => ({
-                    id: item.id,
-                    name: item.name,
-                    completed: item.completed === 1,
-                })),
-            );
-        });
+  return new Promise((acc, rej) => {
+    db.all("SELECT * FROM todo_items", (err, rows: any[]) => {
+      if (err) return rej(err);
+      acc(
+        rows.map((item) => ({
+          id: item.id,
+          name: item.name,
+          completed: item.completed === 1,
+        })),
+      );
     });
+  });
 }
 
 export async function getItem(id: string): Promise<TodoItem | undefined> {
-    return new Promise((acc, rej) => {
-        db.all('SELECT * FROM todo_items WHERE id=?', [id], (err, rows: any[]) => {
-            if (err) return rej(err);
-            acc(
-                rows.map((item) => ({
-                    id: item.id,
-                    name: item.name,
-                    completed: item.completed === 1,
-                }))[0],
-            );
-        });
+  return new Promise((acc, rej) => {
+    db.all("SELECT * FROM todo_items WHERE id=?", [id], (err, rows: any[]) => {
+      if (err) return rej(err);
+      acc(
+        rows.map((item) => ({
+          id: item.id,
+          name: item.name,
+          completed: item.completed === 1,
+        }))[0],
+      );
     });
+  });
 }
 
 export async function storeItem(item: TodoItem): Promise<void> {
-    return new Promise((acc, rej) => {
-        db.run(
-            'INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)',
-            [item.id, item.name, item.completed ? 1 : 0],
-            (err) => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+  return new Promise((acc, rej) => {
+    db.run(
+      "INSERT INTO todo_items (id, name, completed) VALUES (?, ?, ?)",
+      [item.id, item.name, item.completed ? 1 : 0],
+      (err) => {
+        if (err) return rej(err);
+        acc();
+      },
+    );
+  });
 }
 
 export async function updateItem(id: string, item: TodoItem): Promise<void> {
-    return new Promise((acc, rej) => {
-        db.run(
-            'UPDATE todo_items SET name=?, completed=? WHERE id = ?',
-            [item.name, item.completed ? 1 : 0, id],
-            (err) => {
-                if (err) return rej(err);
-                acc();
-            },
-        );
-    });
+  return new Promise((acc, rej) => {
+    db.run(
+      "UPDATE todo_items SET name=?, completed=? WHERE id = ?",
+      [item.name, item.completed ? 1 : 0, id],
+      (err) => {
+        if (err) return rej(err);
+        acc();
+      },
+    );
+  });
 }
 
 export async function removeItem(id: string): Promise<void> {
-    return new Promise((acc, rej) => {
-        db.run('DELETE FROM todo_items WHERE id = ?', [id], (err) => {
-            if (err) return rej(err);
-            acc();
-        });
+  return new Promise((acc, rej) => {
+    db.run("DELETE FROM todo_items WHERE id = ?", [id], (err) => {
+      if (err) return rej(err);
+      acc();
     });
+  });
 }
 
 const driver: DatabaseDriver = {
-    init,
-    teardown,
-    getItems,
-    getItem,
-    storeItem,
-    updateItem,
-    removeItem,
+  init,
+  teardown,
+  getItems,
+  getItem,
+  storeItem,
+  updateItem,
+  removeItem,
 };
 
 export default driver;
