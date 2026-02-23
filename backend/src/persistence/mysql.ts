@@ -1,7 +1,7 @@
 import waitPort from "wait-port";
 import fs from "fs";
 import mysql from "mysql2";
-import { DatabaseDriver, TodoItem } from "./types";
+import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types";
 
 const {
   MYSQL_HOST: HOST,
@@ -67,7 +67,7 @@ export async function teardown(): Promise<void> {
 
 export async function getItems(): Promise<TodoItem[]> {
   return new Promise((acc, rej) => {
-    pool.query("SELECT * FROM todo_items", (err, rows: any[]) => {
+    pool.query("SELECT * FROM todo_items", (err, rows: DatabaseTodoItem[]) => {
       if (err) return rej(err);
       acc(
         rows.map((item) => ({
@@ -85,7 +85,7 @@ export async function getItem(id: string): Promise<TodoItem | undefined> {
     pool.query(
       "SELECT * FROM todo_items WHERE id=?",
       [id],
-      (err, rows: any[]) => {
+      (err, rows: DatabaseTodoItem[]) => {
         if (err) return rej(err);
         acc(
           rows.map((item) => ({

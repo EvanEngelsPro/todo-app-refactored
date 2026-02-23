@@ -1,14 +1,9 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "rootDir": "..",
-        "types": [
-            "jest",
-            "node"
-        ]
-    },
-    "include": [
-        "**/*.ts"
-    ],
-    "exclude": []
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "types": ["jest", "node"],
+  },
+  "include": ["**/*.ts"],
+  "exclude": [],
 }
