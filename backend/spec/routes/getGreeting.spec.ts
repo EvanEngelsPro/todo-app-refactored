@@ -1,4 +1,5 @@
-import getGreeting from "../../src/routes/getGreeting";
+import getGreeting from "../../src/routes/getGreeting.js";
+import { jest, test, expect } from "@jest/globals";
 
 test("it returns greeting correctly", async () => {
   const req: any = {};

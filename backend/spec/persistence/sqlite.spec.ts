@@ -1,6 +1,6 @@
-import db from "../../src/persistence/sqlite";
+import db from "../../src/persistence/sqlite.js";
 import fs from "fs";
-import { TodoItem } from "../../src/persistence/types";
+import { TodoItem } from "../../src/persistence/types.js";
 import { beforeEach, afterEach, test, expect } from "@jest/globals";
 
 const location = process.env.SQLITE_DB_LOCATION || "/etc/todos/todo.db";

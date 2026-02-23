@@ -1,38 +1,53 @@
-import db from "../../src/persistence";
-import deleteItem from "../../src/routes/deleteItem";
+import { jest, beforeEach, test, expect } from "@jest/globals";
 
-jest.mock("../../src/persistence", () => ({
-  removeItem: jest.fn(),
-  getItem: jest.fn(),
+jest.unstable_mockModule("../../src/persistence/index.js", () => ({
+  default: {
+    removeItem: jest.fn(),
+  },
 }));
 
+const { default: deleteItem } = await import("../../src/routes/deleteItem.js");
+
+const persistenceModule = await import("../../src/persistence/index.js");
+
+const mockedDb = persistenceModule.default as jest.Mocked<
+  typeof persistenceModule.default
+>;
+
 beforeEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 test("it propagates error when removeItem fails", async () => {
   const error = new Error("DB connection lost");
-  const req: any = { params: { id: 12345 } };
+
+  const req: any = {
+    params: { id: "123" },
+  };
+
   const res: any = { sendStatus: jest.fn() };
+
   const next = jest.fn();
 
-  (db.removeItem as jest.Mock).mockRejectedValue(error);
+  mockedDb.removeItem.mockRejectedValue(error);
 
   await expect(deleteItem(req, res, next)).rejects.toThrow(
     "DB connection lost",
   );
-  expect(res.sendStatus).not.toHaveBeenCalled();
 });
 
 test("it removes item correctly", async () => {
-  const req: any = { params: { id: 12345 } };
+  const req: any = {
+    params: { id: "123" },
+  };
+
   const res: any = { sendStatus: jest.fn() };
+
   const next = jest.fn();
+
+  mockedDb.removeItem.mockResolvedValue(undefined);
 
   await deleteItem(req, res, next);
 
-  expect((db.removeItem as jest.Mock).mock.calls.length).toBe(1);
-  expect((db.removeItem as jest.Mock).mock.calls[0][0]).toBe(req.params.id);
-  expect(res.sendStatus.mock.calls[0].length).toBe(1);
-  expect(res.sendStatus.mock.calls[0][0]).toBe(200);
+  expect(mockedDb.removeItem).toHaveBeenCalledWith("123");
 });

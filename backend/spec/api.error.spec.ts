@@ -1,14 +1,12 @@
 import request from "supertest";
-import app from "../src/app";
-import db from "../src/persistence";
+import app from "../src/app.js";
+import db from "../src/persistence/index.js";
+import { jest, describe, test, expect } from "@jest/globals";
 
 describe("Error handling", () => {
   test("should return 500 when database throws unexpected error", async () => {
-    const originalStoreItem = db.storeItem;
-
-    // Simuler une erreur interne
-    db.storeItem = jest
-      .fn()
+    const spy = jest
+      .spyOn(db, "storeItem")
       .mockRejectedValue(new Error("Unexpected DB error"));
 
     const response = await request(app)
@@ -21,7 +19,6 @@ describe("Error handling", () => {
       error: "Internal Server Error",
     });
 
-    // restaurer le comportement normal
-    db.storeItem = originalStoreItem;
+    spy.mockRestore();
   });
 });

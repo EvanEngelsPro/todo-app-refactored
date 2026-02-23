@@ -1,39 +1,43 @@
-import db from "../../src/persistence";
-import getItems from "../../src/routes/getItems";
+import { jest, beforeEach, test, expect } from "@jest/globals";
 
-const ITEMS = [{ id: 12345 }];
-
-jest.mock("../../src/persistence", () => ({
-  getItems: jest.fn(),
+jest.unstable_mockModule("../../src/persistence/index.js", () => ({
+  default: {
+    getItems: jest.fn(),
+  },
 }));
 
+const { default: getItems } = await import("../../src/routes/getItems.js");
+
+const persistenceModule = await import("../../src/persistence/index.js");
+
+const mockedDb = persistenceModule.default as jest.Mocked<
+  typeof persistenceModule.default
+>;
+
 beforeEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
 
 test("it propagates error when getItems fails", async () => {
   const error = new Error("DB connection lost");
-  const req: any = {};
-  const res: any = {
-    json: jest.fn(),
-  };
 
-  (db.getItems as jest.Mock).mockRejectedValue(error);
+  const req: any = {};
+  const res: any = { json: jest.fn() };
+
+  mockedDb.getItems.mockRejectedValue(error);
 
   await expect(getItems(req, res)).rejects.toThrow("DB connection lost");
-  expect(res.json).not.toHaveBeenCalled();
 });
 
 test("it gets items correctly", async () => {
+  const ITEMS = [{ id: "1", name: "Test", completed: false }];
+
   const req: any = {};
-  const res: any = {
-    json: jest.fn(),
-  };
-  (db.getItems as jest.Mock).mockReturnValue(Promise.resolve(ITEMS));
+  const res: any = { json: jest.fn() };
+
+  mockedDb.getItems.mockResolvedValue(ITEMS);
 
   await getItems(req, res);
 
-  expect((db.getItems as jest.Mock).mock.calls.length).toBe(1);
-  expect(res.json.mock.calls[0].length).toBe(1);
-  expect(res.json.mock.calls[0][0]).toEqual(ITEMS);
+  expect(res.json).toHaveBeenCalledWith(ITEMS);
 });

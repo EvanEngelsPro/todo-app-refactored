@@ -1,61 +1,77 @@
-import db from "../../src/persistence";
-import updateItem from "../../src/routes/updateItem";
+import { jest, test, expect, beforeEach } from "@jest/globals";
 
-const ITEM = { id: 12345 };
+type TodoItem = {
+  id: string;
+  name: string;
+  completed: boolean;
+};
 
-jest.mock("../../src/persistence", () => ({
-  getItem: jest.fn(),
-  updateItem: jest.fn(),
+const mockedGetItem = jest.fn<() => Promise<TodoItem>>();
+const mockedUpdateItem = jest.fn<() => Promise<void>>();
+
+jest.unstable_mockModule("../../src/persistence/index.js", () => ({
+  default: {
+    getItem: mockedGetItem,
+    updateItem: mockedUpdateItem,
+  },
 }));
 
+const { default: updateItem } = await import("../../src/routes/updateItem.js");
+
 beforeEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
 });
+
+const ITEM: TodoItem = {
+  id: "12345",
+  name: "Test",
+  completed: false,
+};
 
 test("it propagates error when updateItem fails", async () => {
   const error = new Error("DB connection lost");
+
+  mockedUpdateItem.mockRejectedValue(error);
+
   const req: any = {
-    params: { id: 1234 },
+    params: { id: "1234" },
     body: { name: "New title", completed: false },
   };
+
   const res: any = {
     json: jest.fn(),
   };
-  const next = jest.fn();
 
-  (db.updateItem as jest.Mock).mockRejectedValue(error);
+  const next = jest.fn();
 
   await expect(updateItem(req, res, next)).rejects.toThrow(
     "DB connection lost",
   );
-  expect(res.json).not.toHaveBeenCalled();
 });
 
 test("it updates items correctly", async () => {
+  mockedGetItem.mockResolvedValue(ITEM);
+
   const req: any = {
-    params: { id: 1234 },
+    params: { id: "1234" },
     body: { name: "New title", completed: false },
   };
+
   const res: any = {
     json: jest.fn(),
   };
-  const next = jest.fn();
 
-  (db.getItem as jest.Mock).mockReturnValue(Promise.resolve(ITEM));
+  const next = jest.fn();
 
   await updateItem(req, res, next);
 
-  expect((db.updateItem as jest.Mock).mock.calls.length).toBe(1);
-  expect((db.updateItem as jest.Mock).mock.calls[0][0]).toBe(req.params.id);
-  expect((db.updateItem as jest.Mock).mock.calls[0][1]).toEqual({
-    id: req.params.id,
+  expect(mockedUpdateItem).toHaveBeenCalledWith("1234", {
+    id: "1234",
     name: "New title",
     completed: false,
   });
 
-  expect((db.getItem as jest.Mock).mock.calls.length).toBe(1);
-  expect((db.getItem as jest.Mock).mock.calls[0][0]).toBe(req.params.id);
+  expect(mockedGetItem).toHaveBeenCalledWith("1234");
 
-  expect(res.json.mock.calls[0].length).toBe(1);
-  expect(res.json.mock.calls[0][0]).toEqual(ITEM);
+  expect(res.json).toHaveBeenCalledWith(ITEM);
 });

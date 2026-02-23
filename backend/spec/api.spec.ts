@@ -1,9 +1,21 @@
 import request from "supertest";
-import app from "../src/app";
-import db from "../src/persistence";
+import app from "../src/app.js";
+import db from "../src/persistence/index.js";
 import fs from "fs";
 import path from "path";
-import { describe, beforeAll, afterAll, test, expect } from "@jest/globals";
+import {
+  jest,
+  describe,
+  test,
+  expect,
+  beforeAll,
+  afterAll,
+} from "@jest/globals";
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const TEST_DB_PATH = path.join(__dirname, "test.db");
 
