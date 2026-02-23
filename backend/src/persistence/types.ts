@@ -1,7 +1,15 @@
+import { RowDataPacket } from "mysql2";
+
 export interface TodoItem {
   id: string;
   name: string;
   completed: boolean;
+}
+
+export interface DatabaseTodoItem extends RowDataPacket {
+  id: string;
+  name: string;
+  completed: number;
 }
 
 export interface DatabaseDriver {

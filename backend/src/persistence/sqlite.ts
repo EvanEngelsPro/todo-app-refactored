@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import fs from "fs";
-import { DatabaseDriver, TodoItem } from "./types";
+import { DatabaseDriver, TodoItem, DatabaseTodoItem } from "./types";
 import path from "path";
 import os from "os";
 
@@ -53,7 +53,9 @@ export async function teardown(): Promise<void> {
       if (process.env.NODE_ENV === "test") {
         try {
           fs.unlinkSync(location);
-        } catch {}
+        } catch (err) {
+          console.warn("SQLite teardown warning:", err);
+        }
       }
 
       acc();
@@ -63,7 +65,7 @@ export async function teardown(): Promise<void> {
 
 export async function getItems(): Promise<TodoItem[]> {
   return new Promise((acc, rej) => {
-    db.all("SELECT * FROM todo_items", (err, rows: any[]) => {
+    db.all("SELECT * FROM todo_items", (err, rows: DatabaseTodoItem[]) => {
       if (err) return rej(err);
       acc(
         rows.map((item) => ({
@@ -78,16 +80,20 @@ export async function getItems(): Promise<TodoItem[]> {
 
 export async function getItem(id: string): Promise<TodoItem | undefined> {
   return new Promise((acc, rej) => {
-    db.all("SELECT * FROM todo_items WHERE id=?", [id], (err, rows: any[]) => {
-      if (err) return rej(err);
-      acc(
-        rows.map((item) => ({
-          id: item.id,
-          name: item.name,
-          completed: item.completed === 1,
-        }))[0],
-      );
-    });
+    db.all(
+      "SELECT * FROM todo_items WHERE id=?",
+      [id],
+      (err, rows: DatabaseTodoItem[]) => {
+        if (err) return rej(err);
+        acc(
+          rows.map((item) => ({
+            id: item.id,
+            name: item.name,
+            completed: item.completed === 1,
+          }))[0],
+        );
+      },
+    );
   });
 }
 

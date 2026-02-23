@@ -1,5 +1,4 @@
 import express from "express";
-import db from "./persistence";
 
 import getGreeting from "./routes/getGreeting";
 import getItems from "./routes/getItems";
