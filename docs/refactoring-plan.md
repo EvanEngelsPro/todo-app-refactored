@@ -82,6 +82,51 @@
 
 ---
 
+### Étape 8 : Hygiène Architecture et Qualité ✅
+
+Objectif : renforcer la maintenabilité et prévenir les violations architecturales.
+
+- [x] Installer et configurer dependency-cruiser
+- [x] Définir des règles d'architecture :
+  - routes → interdit d'accéder à persistence
+  - respect de la séparation des couches
+- [x] Ajouter scripts quality :
+  - npm run quality
+  - npm run architecture:test
+  - npm run lint
+- [x] Configurer Prettier et appliquer le formatage global
+- [x] Vérifier conformité avec Clean Architecture
+
+---
+
+### Étape 9 : Migration Frontend vers TypeScript ✅
+
+Objectif : améliorer la robustesse et la maintenabilité frontend.
+
+- [x] Installer TypeScript et configurer Vite
+- [x] Convertir tous les composants JSX → TSX
+- [x] Introduire types métier (TodoItem)
+- [x] Supprimer PropTypes
+- [x] Corriger les incompatibilités FontAwesome
+- [x] Vérifier compatibilité Docker
+- [x] Vérifier tests E2E Playwright
+
+---
+
+### Étape 10 : Validation Finale et Industrialisation ✅
+
+Objectif : garantir que le projet est prêt pour production et soutenance.
+
+- [x] Vérifier build backend
+- [x] Vérifier build frontend
+- [x] Vérifier tests unitaires
+- [x] Vérifier tests intégration
+- [x] Vérifier tests E2E
+- [x] Vérifier Docker build complet
+- [x] Vérifier fonctionnement full-stack
+- [x] Vérifier architecture avec dependency-cruiser
+- [x] Vérifier qualité code avec Prettier
+
 ## Règles de Commit
 
 Chaque commit suit le format :
