@@ -269,3 +269,13 @@ Dependency management Clean development workflow Docker-based
 reproducibility
 
 The application is production-ready, testable, and maintainable.
+
+# 16. Future Improvements
+
+- Add authentication and authorization
+- Add user management
+- Add RGPD compliance
+- Add password reset
+- Add audit logging
+- Add API versioning
+- Add new 24 LTS Node version
